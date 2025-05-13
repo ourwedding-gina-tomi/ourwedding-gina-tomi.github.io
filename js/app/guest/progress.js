@@ -13,14 +13,11 @@ export const progress = (() => {
   let loaded = 0;
   let valid = true;
 
-  const log = (...args) => console.log("[progress]", ...args); // for debugging
-
   /**
    * @returns {void}
    */
   const add = () => {
     total += 1;
-    log(`Added: total = ${total}`);
   };
 
   /**
@@ -38,20 +35,17 @@ export const progress = (() => {
    * @returns {void}
    */
   const complete = (type, skip = false) => {
-    if (!valid) return;
-
-    loaded += 1;
-    if (info && bar) {
-      info.innerText = `Loading ${type} ${
-        skip ? "skipped" : "complete"
-      } ${showInformation()}`;
-      bar.style.width = Math.min((loaded / total) * 100, 100).toString() + "%";
+    if (!valid) {
+      return;
     }
 
-    log(`Completed: ${type} (${loaded}/${total})`);
+    loaded += 1;
+    info.innerText = `Loading ${type} ${
+      skip ? "skipped" : "complete"
+    } ${showInformation()}`;
+    bar.style.width = Math.min((loaded / total) * 100, 100).toString() + "%";
 
     if (loaded === total) {
-      log("Dispatching progress.done");
       document.dispatchEvent(new Event("progress.done"));
     }
   };
@@ -63,9 +57,8 @@ export const progress = (() => {
   const invalid = (type) => {
     if (valid) {
       valid = false;
-      if (bar) bar.style.backgroundColor = "red";
-      if (info) info.innerText = `Error loading ${type} ${showInformation()}`;
-      log(`Invalid: ${type}`);
+      bar.style.backgroundColor = "red";
+      info.innerText = `Error loading ${type} ${showInformation()}`;
       document.dispatchEvent(new Event("progress.invalid"));
     }
   };
@@ -76,15 +69,7 @@ export const progress = (() => {
   const init = () => {
     info = document.getElementById("progress-info");
     bar = document.getElementById("progress-bar");
-
-    if (!info || !bar) {
-      console.error("[progress] Elements not found");
-      return;
-    }
-
     info.classList.remove("d-none");
-    void info.offsetWidth; // Force reflow (iOS fix)
-    log("Initialized progress bar");
   };
 
   return {
@@ -94,21 +79,3 @@ export const progress = (() => {
     complete,
   };
 })();
-
-// SAFE INIT: Wait for DOM to be fully ready
-document.addEventListener("DOMContentLoaded", () => {
-  progress.init();
-
-  // Example usage:
-  progress.add();
-  progress.add();
-
-  setTimeout(() => progress.complete("Asset A"), 1000);
-  setTimeout(() => progress.complete("Asset B"), 2000);
-});
-
-// Listen for done
-document.addEventListener("progress.done", () => {
-  console.log("All assets loaded — continue to next screen");
-  // Do navigation or next step here
-});
