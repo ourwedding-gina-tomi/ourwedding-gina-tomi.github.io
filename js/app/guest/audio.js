@@ -77,8 +77,7 @@ export const audio = (() => {
 
     document.addEventListener("undangan.open", () => {
       play();
-      music.style.display = "block";
-      music.style.visibility = "visible";
+      music.classList.remove("d-none");
     });
 
     music.addEventListener("offline", pause);
