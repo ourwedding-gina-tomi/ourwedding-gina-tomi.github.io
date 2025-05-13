@@ -29,7 +29,7 @@ export const audio = (() => {
       audioEl = new Audio(await cache("audio").get(url, cancel));
       audioEl.volume = 1;
       audioEl.loop = true;
-      audioEl.muted = false;
+      audioEl.muted = true; // Set muted to true initially to satisfy iOS autoplay restrictions
       audioEl.currentTime = 0;
       audioEl.autoplay = false;
       audioEl.controls = false;
@@ -58,6 +58,7 @@ export const audio = (() => {
       try {
         await audioEl.play();
         isPlay = true;
+        audioEl.muted = false;
         music.disabled = false;
         music.innerHTML = statePlay;
       } catch (err) {
@@ -80,8 +81,15 @@ export const audio = (() => {
       music.classList.remove("d-none");
     });
 
-    music.addEventListener("offline", pause);
     music.addEventListener("click", () => (isPlay ? pause() : play()));
+
+    music.addEventListener("offline", pause);
+
+    document.addEventListener("touchstart", () => {
+      if (!isPlay) {
+        play();
+      }
+    });
   };
 
   /**
