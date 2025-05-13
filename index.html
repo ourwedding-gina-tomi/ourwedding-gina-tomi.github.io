@@ -1521,5 +1521,26 @@
         </div>
       </div>
     </div>
+
+    <script>
+      document.getElementById("button-music").addEventListener("click", () => {
+        const audioCtx = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const buffer = audioCtx.createBuffer(1, 1, 22050);
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioCtx.destination);
+        source.start(0);
+      });
+
+      document
+        .querySelector('[onclick*="undangan.guest.open"]')
+        .addEventListener("click", () => {
+          const evt = new Event("undangan.open");
+          document.dispatchEvent(evt);
+        });
+
+      console.log(audioCtx);
+    </script>
   </body>
 </html>
