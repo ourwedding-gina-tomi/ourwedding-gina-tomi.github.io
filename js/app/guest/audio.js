@@ -75,19 +75,10 @@ export const audio = (() => {
       music.innerHTML = statePause;
     };
 
-    // document.addEventListener('undangan.open', () => {
-    //     play();
-    //     music.classList.remove('d-none');
-    // });
-
-    const openBtn = document.getElementById("open-invitation");
-    if (openBtn) {
-      openBtn.addEventListener("click", async () => {
-        undangan.guest.open(openBtn);
-        await play();
-        music.classList.remove("d-none");
-      });
-    }
+    document.addEventListener("undangan.open", () => {
+      play();
+      music.classList.remove("d-none");
+    });
 
     music.addEventListener("offline", pause);
     music.addEventListener("click", () => (isPlay ? pause() : play()));
