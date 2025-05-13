@@ -29,7 +29,7 @@ export const audio = (() => {
       audioEl = new Audio(await cache("audio").get(url, cancel));
       audioEl.volume = 1;
       audioEl.loop = true;
-      audioEl.muted = true; // Set muted to true initially to satisfy iOS autoplay restrictions
+      audioEl.muted = false;
       audioEl.currentTime = 0;
       audioEl.autoplay = false;
       audioEl.controls = false;
@@ -58,7 +58,6 @@ export const audio = (() => {
       try {
         await audioEl.play();
         isPlay = true;
-        audioEl.muted = false;
         music.disabled = false;
         music.innerHTML = statePlay;
       } catch (err) {
@@ -78,18 +77,12 @@ export const audio = (() => {
 
     document.addEventListener("undangan.open", () => {
       play();
-      music.classList.remove("d-none");
+      music.style.display = "block";
+      music.style.visibility = "visible";
     });
-
-    music.addEventListener("click", () => (isPlay ? pause() : play()));
 
     music.addEventListener("offline", pause);
-
-    document.addEventListener("touchstart", () => {
-      if (!isPlay) {
-        play();
-      }
-    });
+    music.addEventListener("click", () => (isPlay ? pause() : play()));
   };
 
   /**
