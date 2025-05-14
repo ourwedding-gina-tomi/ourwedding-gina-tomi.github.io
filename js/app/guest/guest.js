@@ -143,7 +143,6 @@ export const guest = (() => {
   const open = (button) => {
     button.disabled = true;
     document.body.scrollIntoView({ behavior: "instant" });
-    document.dispatchEvent(new Event("undangan.open"));
 
     if (theme.isAutoMode()) {
       document.getElementById("button-theme").classList.remove("d-none");
@@ -154,6 +153,8 @@ export const guest = (() => {
 
     confetti.basicAnimation();
     util.timeOut(confetti.openAnimation, 1500);
+
+    document.dispatchEvent(new Event("undangan.open"));
     util
       .changeOpacity(document.getElementById("welcome"), false)
       .then((el) => el.remove());
@@ -178,6 +179,22 @@ export const guest = (() => {
     i.width = img.width;
     i.height = img.height;
     bs.modal("modal-image").show();
+  };
+
+  /**
+   * @returns {void}
+   */
+  const modalImageClick = () => {
+    document
+      .getElementById("show-modal-image")
+      .addEventListener("click", (e) => {
+        const abs =
+          e.currentTarget.parentNode.querySelector(".position-absolute");
+
+        abs.classList.contains("d-none")
+          ? abs.classList.replace("d-none", "d-flex")
+          : abs.classList.replace("d-flex", "d-none");
+      });
   };
 
   /**
@@ -283,21 +300,11 @@ export const guest = (() => {
     animateSvg();
     countDownDate();
     showGuestName();
+    modalImageClick();
     normalizeArabicFont();
     buildGoogleCalendar();
 
     document.getElementById("root").classList.remove("opacity-0");
-
-    document
-      .getElementById("show-modal-image")
-      .addEventListener("click", (e) => {
-        const abs =
-          e.currentTarget.parentNode.querySelector(".position-absolute");
-
-        abs.classList.contains("d-none")
-          ? abs.classList.replace("d-none", "d-flex")
-          : abs.classList.replace("d-flex", "d-none");
-      });
 
     if (information.has("presence")) {
       document.getElementById("form-presence").value = information.get(
